@@ -20,6 +20,9 @@ cap = cv.VideoCapture(pill_video_2)
 #initialize model
 model = YOLO(model_path)
 
+#Visualize results
+#results = model(source=pill_video_2, show=True, conf=0.3, tracker=tracker_path, imgsz = 640)
+
 while True:
 
     ret, frame = cap.read()
@@ -27,22 +30,35 @@ while True:
         print("No Frame")
         break
 
-    #Visualize results
-    #results = model(source=pill_video_2, show=True, conf=0.3, tracker=tracker_path, imgsz = 640)
+    
 
-    results = model(frame, conf=0.5, tracker=tracker_path, imgsz = 640 ,verbose=False)
+    results = model.track(frame, conf=0.5, tracker=tracker_path, imgsz = 640 ,verbose=False)
 
     for r in results:
 
-        for box, name, conf_tensor in zip(r.boxes.xyxy, r.names, r.boxes.conf):
+        if r.boxes.id is None:
+                    print('No Detections')
+                    if cv.waitKey(1) > 0:
+                        break
+                    continue 
+
+        for id_tensor, box, name, conf_tensor in zip(r.boxes.id, r.boxes.xyxy, r.names, r.boxes.conf):
+            
+            #get id
+            id = int(id_tensor.item())
+
+            print(id)
 
             #draw bounding box
             x1, y1, x2, y2 = box[:4]
             cv.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
 
+            #display id
+            text = str(id)
+            cv.putText(frame, text, (int(x1), int(y1 + 40)), cv.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 0), 4)
+
             #display names
-            individual_name = r.names[name]
-            text = str(individual_name)       
+            text = str(r.names[name])       
             cv.putText(frame, text, (int(x1), int(y1 - 2)), cv.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 0), 4)
 
             #display confidence
