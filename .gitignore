@@ -4,3 +4,4 @@ other/
 images/
 runs/
 videos/
+**/__pycache__/
