@@ -34,15 +34,23 @@ class PillIdentifier:
         for result in results:
             boxes = result.boxes.cpu().numpy()
 
+            if result.boxes.cls is None:
+                    print('No Detections')
+                    if cv.waitKey(1) > 0:
+                        break
+                    continue
+            
             xyxys = boxes.xyxy
             names = result.names
             confidences = result.boxes.conf
-            class_ids = result.boxes.id
+            class_ids = result.boxes.cls
+            
+            for name, xyxy, conf_tensor, id_tensor in zip(names, xyxys, confidences, class_ids):
 
-            print(class_ids)
-            print(names)
-
-            for name, xyxy, conf_tensor in zip(names, xyxys, confidences):
+                #get id
+                id = int(id_tensor.item())
+                id_text = str(id)
+                cv.putText(frame, id_text, (int(xyxy[0]), int(xyxy[1] - 100)), cv.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 0), 4)
 
                 #display names
                 name_text = str(result.names[name])  
@@ -56,7 +64,7 @@ class PillIdentifier:
                 
                 #draw rectangle
                 cv.rectangle(frame, (int(xyxy[0]), int(xyxy[1])), (int(xyxy[2]), int(xyxy[3])), (0, 255, 0), 2)
-    
+        
         return frame
     
     def __call__(self):
