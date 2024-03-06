@@ -5,7 +5,8 @@ import torch
 
 class PillIdentifier:
     def __init__(self, capture_index):
-        self.capture_index = capture_index
+        self.cap = cv.VideoCapture(capture_index)
+        assert self.cap.isOpened()
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
         print(f'Using Device: {self.device}')
 
@@ -19,13 +20,10 @@ class PillIdentifier:
         return model
     
     def predict(self, frame):
-
         results = self.model(frame)
-
         return results
     
     def plot_bboxes(self, results, frame):
-
         xyxys = []
         names = []
         confidences = []
@@ -35,10 +33,10 @@ class PillIdentifier:
             boxes = result.boxes.cpu().numpy()
 
             if result.boxes.cls is None:
-                    print('No Detections')
-                    if cv.waitKey(1) > 0:
-                        break
-                    continue
+                print('No Detections')
+                if cv.waitKey(1) > 0:
+                    break
+                continue
             
             xyxys = boxes.xyxy
             names = result.names
@@ -46,7 +44,6 @@ class PillIdentifier:
             class_ids = result.boxes.cls
             
             for name, xyxy, conf_tensor, id_tensor in zip(names, xyxys, confidences, class_ids):
-
                 #get id
                 id = int(id_tensor.item())
                 id_text = str(id)
@@ -66,20 +63,16 @@ class PillIdentifier:
                 cv.rectangle(frame, (int(xyxy[0]), int(xyxy[1])), (int(xyxy[2]), int(xyxy[3])), (0, 255, 0), 2)
         
         return frame
-    
-    def __call__(self):
-        cap = cv.VideoCapture(self.capture_index)
-        assert cap.isOpened()
 
-        while True:
-            ret, frame = cap.read()
-            if not ret:
-                print("No Frame")
-                break
+    def process_frame(self):
+        ret, frame = self.cap.read()
+        if not ret:
+            print("No Frame")
+            return None
 
-            results = self.predict(frame)
-            frame = self.plot_bboxes(results, frame)
-            cv.imshow('frame', frame)
+        results = self.predict(frame)
+        frame = self.plot_bboxes(results, frame)
 
-            if cv.waitKey(1) > 0:
-                break
+        # Convert frame to JPEG
+        ret, jpeg = cv.imencode('.jpg', frame)
+        return jpeg.tobytes()
