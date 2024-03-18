@@ -4,14 +4,17 @@ import math
 
 def video_detection(path_x):
     video_capture = path_x
-    #Create a Webcam Object
+
+    #create webcam
     cap=cv2.VideoCapture(video_capture)
     frame_width=int(cap.get(3))
     frame_height=int(cap.get(4))
 
+    #initialize the model and classes
     model=YOLO("models/pill.pt")
     classNames=['Advil', 'Gravol', 'Tylenol 500', 'Tylenol Cold and Flu Nighttime', 'Tylenol Extra Strength']
 
+    #main loop
     while True:
         success, img = cap.read()
         results=model(img,stream=True)
@@ -32,9 +35,4 @@ def video_detection(path_x):
                 cv2.rectangle(img, (x1,y1), c2, [255,0,255], -1, cv2.LINE_AA)  # filled
                 cv2.putText(img, label, (x1,y1-2),0, 1,[255,255,255], thickness=1,lineType=cv2.LINE_AA)
         yield img
-        #out.write(img)
-        #cv2.imshow("image", img)
-        #if cv2.waitKey(1) & 0xFF==ord('1'):
-            #break
-    #out.release()
 cv2.destroyAllWindows()
