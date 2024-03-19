@@ -10,7 +10,7 @@ import cv2
 from pill import video_detection
 
 #Create an instance of the Flask class
-app = Flask(__name__, template_folder='web')
+app = Flask(__name__, template_folder='web', static_folder='images')
 app.config['SECRET_KEY'] = 'key'
 app.config['UPLOAD_FOLDER'] = 'videos'
 
