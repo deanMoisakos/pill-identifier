@@ -30,6 +30,7 @@
         padding:5px;
         text-align:right;
         }
+        
         ul{
         list-style:none;
         padding:0px;}
@@ -75,12 +76,29 @@
         color:black;
         line-height: 2;
         }
+
+        .features{
+        color:black;
+        display:flex;
+        flex-direction:row;
+        align-items: center;
+        justify-content: center;
+        padding:20px;
+        }
         
         /*Image Styling*/
         .features figure img{
-        border-radius:10%;
-        width:400px;
+        border-radius:5%;
+        width:400px;;
         }
+
+        .features figure figcaption{
+        font-size:20px;
+        background-color: whitesmoke;
+        text-align: center;
+        border-radius: 0%;
+        }
+
        
         footer{
         background-color:black;
@@ -117,7 +135,8 @@
     <div class="description">
         <p> 
             The purpose of this project is to utilize machine learning and computer vision to identify pills. The target audience are
-            healthcare workers or people that take many medications that need to quickly identify an ulabeled pill they have. Although a small-scale project, 
+            healthcare workers or people that take many different medication. People in these demographics may
+            need to quickly identify an unlabeled pill they have. Although a small-scale project, 
             this provides proof of concept for a larger scale project in the medical field. This project
             also proves of the power of machine learning and how it can be used to improve vision processes that need to identify key objects. 
             Machine learning and AI is the future of technology and this project is a small step in that direction.
@@ -133,11 +152,35 @@
         <p> 
             This project is a web application that uses YOLOV8 and OpenCV for the machine learning and computer visions aspects respectively. 
             The model is trained on a custom dataset of 49 images using Roboflow. 
-            The user can upload a video of a pill or use live webcam to view pills. The model will return the name of the pill and provide a
+            The user can upload a video of a pill or use the live webcam to view pills. The model will return the name of the pill and provide a
             brief description of the pill. This webpage is built using flask. Below there are provided examples of the results this project
-            can provide.
+            can produce.
         </p>
     </div>
+
+    <section class="features">
+        <figure>
+            <img src="../images/result_images/test_result.PNG" alt="Pills">
+            <figcaption>One Miss in a Crowd of Six</figcaption>
+        </figure>
+        <figure>
+            <img src="../images/result_images/web_result.PNG" alt="Pills">
+            <figcaption>Captures Even with Angles and Shadows</figcaption>
+        </figure>
+        <figure>
+            <img src="../images/result_images/pill_contain.PNG" alt="Pills">
+            <figcaption>Crowded Pills in a Container</figcaption>
+        </figure>
+    </section>
+
+    <div class="footer">
+        <footer>
+            <p>For any questions, please contact me at: <a href = "mailto: dmoisakos@.com">dmoisakos@gmail.com</a></p>
+            <p>Connect on LinkedIn: <a href = "https://www.linkedin.com/in/konstantinos-moisakos-26a1332a3/">Konstantinos Moisakos</a></p>
+            <p>Follow the Project on Github: <a href="https://github.com/deanMoisakos">deanMoisakos</a></p>
+        </footer>
+    </div>
+            
 
 </body>
 </html>
