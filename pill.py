@@ -17,7 +17,10 @@ def video_detection(path_x):
     #main loop
     while True:
         success, img = cap.read()
+        if not success:
+            yield [None, []]
         results=model(img,stream=True)
+        classStrings = []
         for r in results:
             boxes=r.boxes
             for box in boxes:
@@ -29,10 +32,18 @@ def video_detection(path_x):
                 cls=int(box.cls[0])
                 class_name=classNames[cls]
                 label=f'{class_name}{conf}'
+                print_label = f'Pill: {class_name} confidence: {conf}'
+                if class_name == 'Advil':
+                    print_label = f' Advil Detected | Purpose: Pain Relief | Dosage: 400mg Ibuprofen'
+                if class_name == 'Tylenol 500':
+                    print_label = f' Tylenol 500 Detected | Purpose: Pain Relief | Dosage: 500mg Acetaminophen'
+                if class_name == 'Tylenol Extra Strength':
+                    print_label = f' Tylenol Extra Strength Detected | Purpose: Pain Relief | Dosage: 500mg Acetaminophen'
                 t_size = cv2.getTextSize(label, 0, fontScale=1, thickness=2)[0]
                 print(t_size)
                 c2 = x1 + t_size[0], y1 - t_size[1] - 3
                 cv2.rectangle(img, (x1,y1), c2, [255,0,255], -1, cv2.LINE_AA)  # filled
                 cv2.putText(img, label, (x1,y1-2),0, 1,[255,255,255], thickness=1,lineType=cv2.LINE_AA)
-        yield img
+                classStrings.append(print_label)
+        yield [img, classStrings]
 cv2.destroyAllWindows()
