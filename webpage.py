@@ -42,7 +42,7 @@ def generate_frames_web(path_x):
     latest_detection_status = "No pills detected"
     for detection_, classStrings_ in yolo_output:
         if len(classStrings_)>0:
-            latest_detection_status = "Pills Detected " + str(classStrings_)
+            latest_detection_status = "Pills Detected: " + str(classStrings_)
         ref,buffer=cv2.imencode('.jpg',detection_)
  
         frame=buffer.tobytes()
